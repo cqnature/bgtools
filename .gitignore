@@ -54,5 +54,6 @@ ehthumbs.db
 Thumbs.db
 
 config
+output
 *.pyc
-*.csv
+
