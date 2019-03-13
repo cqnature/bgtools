@@ -119,8 +119,9 @@ def generate_report_at_date(platform, date, end_date):
                 for k in range(currentLayerIndex + 1, max_layer + 1):
                     current_lost_datas.append([k, 0, 0])
                 current_lost_usercount = sum(t[1] for t in current_lost_datas)
+                origin_lost_base_usercount = lost_base_usercount
                 lost_base_usercount = current_lost_usercount
-                current_lost_usercount -= lost_base_usercount
+                current_lost_usercount -= origin_lost_base_usercount
                 lost_day_progress_lines[0] = lost_day_progress_lines[0].format(single_date, lost_base_day)
                 lost_day_progress_lines[2] = lost_day_progress_lines[2].format(current_lost_usercount, 100*float(current_lost_usercount)/float(signup_usercount))
                 lost_base_day = single_date
