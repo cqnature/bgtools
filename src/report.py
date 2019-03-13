@@ -20,15 +20,6 @@ def daterange(start_date_string, end_date_string, containStart = False):
     for n in range(int((end_date - start_date).days)):
         yield (start_date + timedelta(n)).strftime("%Y%m%d")
 
-def generate_report(platform, start_date, end_date):
-    output = "report_{0}_from_{1}_to_{2}.csv".format(platform, start_date, end_date)
-    with open(output, mode='w+') as out:
-        for single_date in daterange(start_date, end_date, True):
-            report_string = generate_report_at_date(platform, single_date, end_date)
-            if report_string != None:
-                out.write(report_string)
-        out.close()
-
 def generate_report_at_date(platform, date, end_date):
     reportstring = ""
     signup_usercount = 0
@@ -138,22 +129,10 @@ def generate_report_at_date(platform, date, end_date):
         file.close()
     return reportstring
 
-# Use like this: python unpacker.py [Image Path or Image Name(but no suffix)] [Texture uuid]
-if __name__ == '__main__':
-    if len(sys.argv) <= 3:
-        print("""
-        You must pass platform(IOS/ANDROID) as the first parameter,
-        report start date(YYYYMMDD) as second parameter,
-        report end date(YYYYMMDD) as third parameter
-        """)
-        exit(1)
-    # filename = sys.argv[1]
-    platform = sys.argv[1]
+def generate_report(platform, start_date, end_date):
     if platform != "IOS" and platform != "ANDROID":
         print("You must pass platform in IOS or ANDROID")
         exit(1)
-    start_date = sys.argv[2]
-    end_date = sys.argv[3]
     try:
         validate(start_date)
         validate(end_date)
@@ -161,4 +140,11 @@ if __name__ == '__main__':
         print(Argument)
         exit(1)
 
-    generate_report(platform, start_date, end_date)
+    output = "report_{0}_from_{1}_to_{2}.csv".format(platform, start_date, end_date)
+    with open(output, mode='w+') as out:
+        for single_date in daterange(start_date, end_date, True):
+            report_string = generate_report_at_date(platform, single_date, end_date)
+            if report_string != None:
+                out.write(report_string)
+        out.close()
+        
