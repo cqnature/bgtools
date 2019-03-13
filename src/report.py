@@ -30,7 +30,7 @@ def generate_report_at_date(platform, date, end_date):
         signup_usercount = sum(1 for _ in signup_results)
         if signup_usercount == 0 or firstopen_usercount == 0:
             return None;
-        tutorial_results = querysql("./sql/tutorial_lost_users.sql", platform, date)
+        tutorial_results = querysql("./sql/signup_tutorial.sql", platform, date)
         tutorial_usercount = tutorial_results[0].user_count
         content = file.read()
         reportstring += content.format(platform, date, firstopen_usercount, signup_usercount, 100*float(signup_usercount)/float(firstopen_usercount), tutorial_usercount, 100*float(tutorial_usercount)/float(signup_usercount))
