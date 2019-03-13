@@ -1,2 +1,1 @@
-platform,{0},signup_date,{1},firstopen_user,{2},signup_user,{3},signup_rate,{4}
-,,
+平台,{0},注册日期,{1},打开用户数,{2},注册用户数,{3},注册比例,{4:.2f}%

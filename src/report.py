@@ -37,8 +37,10 @@ def generate_report_at_date(platform, date, end_date):
         firstopen_usercount = sum(1 for _ in firstopen_results)
         signup_results = querysql("./sql/signup_user_id.sql", platform, date)
         signup_usercount = sum(1 for _ in signup_results)
+        if signup_usercount == 0 or firstopen_usercount == 0:
+            return None;
         content = file.read()
-        reportstring += content.format(platform, date, firstopen_usercount, signup_usercount, float(signup_usercount)/float(firstopen_usercount))
+        reportstring += content.format(platform, date, firstopen_usercount, signup_usercount, 100*float(signup_usercount)/float(firstopen_usercount))
         print("reportstring", reportstring)
         file.close()
     with open("./etc/lost_user_details.csv") as file:
@@ -50,14 +52,14 @@ def generate_report_at_date(platform, date, end_date):
         currentLayerIndex = 1
         activate_manto_user_count = 0
         signup_layers_progress_lines[0] = signup_layers_progress_lines[0].format(date)
-        signup_layers_progress_lines[2] = signup_layers_progress_lines[2].format(signup_usercount, 1)
+        signup_layers_progress_lines[2] = signup_layers_progress_lines[2].format(signup_usercount, 100)
         signup_base_datas = []
         for k in range(1, signup_layers_progress_results[0].max_layer):
             signup_base_datas.append([k, 0, 0])
         for row in signup_layers_progress_results:
             for k in range(currentLayerIndex + 1, row.max_layer + 1):
                 if k == row.max_layer:
-                    signup_base_datas.append([k, row.user_count, float(row.user_count)/float(signup_usercount)])
+                    signup_base_datas.append([k, row.user_count, 100*float(row.user_count)/float(signup_usercount)])
                 else:
                     signup_base_datas.append([k, 0, 0])
                 activate_manto_user_count += row.user_count
@@ -66,10 +68,10 @@ def generate_report_at_date(platform, date, end_date):
             signup_base_datas.append([k, 0, 0])
         activate_manto_one_count = signup_usercount - activate_manto_user_count
         signup_base_datas[0][1] = activate_manto_one_count
-        signup_base_datas[0][2] = float(activate_manto_one_count)/float(signup_usercount)
+        signup_base_datas[0][2] = 100*float(activate_manto_one_count)/float(signup_usercount)
         for k in range(len(signup_base_datas)):
             data = signup_base_datas[k]
-            signup_layers_progress_lines.append("{0},{1},{2},".format(data[0], data[1], data[2]))
+            signup_layers_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1], data[2]))
         report_lines.extend(signup_layers_progress_lines)
 
         currentIndex = 1
@@ -86,7 +88,7 @@ def generate_report_at_date(platform, date, end_date):
                 for row in lost_day_results:
                     for k in range(currentLayerIndex + 1, row.max_layer + 1):
                         if k == row.max_layer:
-                            lost_base_datas.append([k, row.user_count, float(row.user_count)/float(signup_usercount)])
+                            lost_base_datas.append([k, row.user_count, 100*float(row.user_count)/float(signup_usercount)])
                         else:
                             lost_base_datas.append([k, 0, 0])
                     currentLayerIndex = row.max_layer
@@ -94,11 +96,11 @@ def generate_report_at_date(platform, date, end_date):
                     lost_base_datas.append([k, 0, 0])
                 lost_base_usercount = sum(t[1] for t in lost_base_datas)
                 lost_day1_progress_lines[0] = lost_day1_progress_lines[0].format(single_date)
-                lost_day1_progress_lines[2] = lost_day1_progress_lines[2].format(lost_base_usercount, float(lost_base_usercount)/float(signup_usercount))
+                lost_day1_progress_lines[2] = lost_day1_progress_lines[2].format(lost_base_usercount, 100* float(lost_base_usercount)/float(signup_usercount))
                 lost_base_day = single_date
                 for k in range(len(lost_base_datas)):
                     data = lost_base_datas[k]
-                    lost_day1_progress_lines.append("{0},{1},{2},".format(data[0], data[1], data[2]))
+                    lost_day1_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1], data[2]))
                 for k in range(len(report_lines)):
                     report_lines[k] = report_lines[k] + lost_day1_progress_lines[k]
             else:
@@ -110,26 +112,28 @@ def generate_report_at_date(platform, date, end_date):
                 for row in lost_day_results:
                     for k in range(currentLayerIndex + 1, row.max_layer + 1):
                         if k == row.max_layer:
-                            current_lost_datas.append([k, row.user_count, float(row.user_count)/float(signup_usercount)])
+                            current_lost_datas.append([k, row.user_count, 100*float(row.user_count)/float(signup_usercount)])
                         else:
                             current_lost_datas.append([k, 0, 0])
                     currentLayerIndex = row.max_layer
                 for k in range(currentLayerIndex + 1, max_layer + 1):
                     current_lost_datas.append([k, 0, 0])
-                lost_base_usercount = sum(t[1] for t in current_lost_datas) - lost_base_usercount
+                current_lost_usercount = sum(t[1] for t in current_lost_datas)
+                lost_base_usercount = current_lost_usercount
+                current_lost_usercount -= lost_base_usercount
                 lost_day_progress_lines[0] = lost_day_progress_lines[0].format(single_date, lost_base_day)
-                lost_day_progress_lines[2] = lost_day_progress_lines[2].format(lost_base_usercount, float(lost_base_usercount)/float(signup_usercount))
+                lost_day_progress_lines[2] = lost_day_progress_lines[2].format(current_lost_usercount, 100*float(current_lost_usercount)/float(signup_usercount))
                 lost_base_day = single_date
                 for k in range(len(current_lost_datas)):
                     data = current_lost_datas[k]
                     base_data = lost_base_datas[k]
-                    lost_day_progress_lines.append("{0},{1},{2},".format(data[0], data[1] - base_data[1], data[2] - base_data[2]))
+                    lost_day_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1] - base_data[1], data[2] - base_data[2]))
                 for k in range(len(report_lines)):
                     report_lines[k] = report_lines[k] + lost_day_progress_lines[k]
                 lost_base_datas = current_lost_datas
             currentIndex += 1
         reportstring += '\n'.join(report_lines)
-        reportstring += '\n'
+        reportstring += '\n\n'
         file.close()
     return reportstring
 

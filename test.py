@@ -20,4 +20,4 @@ if __name__ == '__main__':
     # for row in signup_layers_progress_results:
     #     print("{} : {} views".format(row.max_layer, row.user_count))
     generate_report("ANDROID", "20190305", "20190312")
-    # generate_report("IOS", "20190305", "20190312")
+    generate_report("IOS", "20190305", "20190312")
