@@ -51,9 +51,9 @@ def generate_report_at_date(platform, date, end_date):
             for k in range(currentLayerIndex + 1, row.max_layer + 1):
                 if k == row.max_layer:
                     signup_base_datas.append([k, row.user_count, 100*float(row.user_count)/float(signup_usercount)])
+                    activate_manto_user_count += row.user_count
                 else:
                     signup_base_datas.append([k, 0, 0])
-                activate_manto_user_count += row.user_count
             currentLayerIndex = row.max_layer
         for k in range(currentLayerIndex + 1, max_layer + 1):
             signup_base_datas.append([k, 0, 0])
@@ -147,4 +147,3 @@ def generate_report(platform, start_date, end_date):
             if report_string != None:
                 out.write(report_string)
         out.close()
-        
