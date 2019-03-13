@@ -53,4 +53,5 @@ Contact GitHub API Training Shop Blog About
 ehthumbs.db
 Thumbs.db
 
-google-cloud-sdk/
+config
+*.pyc
