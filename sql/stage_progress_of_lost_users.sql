@@ -1,6 +1,6 @@
 SELECT stage,
        wave,
-       count(user_pseudo_id) AS COUNT
+       count(user_pseudo_id) AS user_count
 FROM
   (SELECT C.user_pseudo_id,
           C.event_timestamp,
