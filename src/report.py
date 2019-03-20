@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 import os
 import json
@@ -136,6 +137,8 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
                 append_line(report_lines, report_lines_length + k, lost_day_progress_lines[k])
             # 增加天数索引
             currentDayIndex += 1
+            # 清空缓存
+            del lost_day_progress_lines[:]
         file.close()
     return reportstring
 
