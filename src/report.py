@@ -81,6 +81,10 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
         lost_base_day = ''
         lost_day_progress_lines = []
         for single_date in daterange(date, end_date):
+            # 留存率查询
+            lost_user_ids = querysql("./sql/lost_user_id.sql", platform, date, single_date)
+            current_lost_usercount = sum(1 for _ in lost_user_ids)
+            # 流失分布查询
             lost_day_results = querysql("./sql/plant_progress_of_lost_users.sql", platform, date, single_date)
             if currentDayIndex == 1:
                 lost_day_progress_lines.extend([x.strip() for x in lines[4:8]])
@@ -96,10 +100,12 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
                     currentIndex = row.max_level
                 for k in range(currentIndex + 1, max_level + 1):
                     lost_base_datas.append([k, 0, 0])
-                lost_base_usercount = sum(t[1] for t in lost_base_datas)
+                lost_base_usercount = current_lost_usercount
                 lost_day_progress_lines[0] = lost_day_progress_lines[0].format(single_date)
                 lost_day_progress_lines[3] = lost_day_progress_lines[3].format(lost_base_usercount, 100* float(lost_base_usercount)/float(firstopen_usercount))
                 lost_base_day = single_date
+                lost_base_datas[1] = lost_base_usercount - sum(t[1] for t in lost_base_datas)
+                lost_base_datas[2] = 100*float(lost_base_datas[1])/float(firstopen_usercount)
                 for k in range(len(lost_base_datas)):
                     data = lost_base_datas[k]
                     lost_day_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1], data[2]))
@@ -118,21 +124,19 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
                     currentIndex = row.max_level
                 for k in range(currentIndex + 1, max_level + 1):
                     current_lost_datas.append([k, 0, 0])
-                current_lost_usercount = sum(t[1] for t in current_lost_datas)
                 origin_lost_base_usercount = lost_base_usercount
                 lost_base_usercount = current_lost_usercount
                 current_lost_usercount -= origin_lost_base_usercount
                 lost_day_progress_lines[0] = lost_day_progress_lines[0].format(single_date, lost_base_day)
                 lost_day_progress_lines[3] = lost_day_progress_lines[3].format(current_lost_usercount, 100*float(current_lost_usercount)/float(firstopen_usercount))
                 lost_base_day = single_date
+                current_lost_datas[1] = lost_base_usercount - sum(t[1] for t in current_lost_datas)
+                current_lost_datas[2] = 100*float(current_lost_datas[1])/float(firstopen_usercount)
                 for k in range(len(current_lost_datas)):
                     data = current_lost_datas[k]
                     base_data = lost_base_datas[k]
                     lost_day_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1] - base_data[1], data[2] - base_data[2]))
                 lost_base_datas = current_lost_datas
-            # 留存率查询
-            lost_user_ids = querysql("./sql/lost_user_id.sql", platform, date, single_date)
-            current_lost_usercount = sum(1 for _ in lost_user_ids)
             lost_day_progress_lines[1] = lost_day_progress_lines[1].format(firstopen_usercount - current_lost_usercount, 100*float(firstopen_usercount - current_lost_usercount)/float(firstopen_usercount))
             # 数据拼接
             for k in range(len(lost_day_progress_lines)):
