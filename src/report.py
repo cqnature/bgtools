@@ -80,7 +80,7 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
         signup_day_progress_lines[3] = signup_day_progress_lines[3].format(firstopen_usercount, 100)
         signup_base_datas = []
         progress_data_map = {}
-        for k in range(1, max_level):
+        for k in range(1, max_level + 1):
             data = [k, 0, 0]
             signup_base_datas.append(data)
             progress_data_map[k] = data
@@ -111,7 +111,7 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
             if currentDayIndex == 1:
                 lost_day_progress_lines.extend([x.strip() for x in lines[4:10]])
                 progress_data_map = {}
-                for k in range(1, max_level):
+                for k in range(1, max_level + 1):
                     data = [k, 0, 0]
                     lost_base_datas.append(data)
                     progress_data_map[k] = data
@@ -133,7 +133,7 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
                 current_lost_datas = []
                 lost_day_progress_lines.extend([x.strip() for x in lines[10:]])
                 progress_data_map = {}
-                for k in range(1, max_level):
+                for k in range(1, max_level + 1):
                     data = [k, 0, 0]
                     current_lost_datas.append(data)
                     progress_data_map[k] = data
