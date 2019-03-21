@@ -282,7 +282,7 @@ def generate_stage_report_at_date(report_lines, platform, date, end_date):
                 lost_base_datas = current_lost_datas
             # 数据拼接
             for k in range(len(lost_day_progress_lines)):
-                append_line(report_lines, lineIndex + k, lost_day_progress_lines[k])
+                append_line(report_lines, lineIndex + k, lost_day_progress_lines[k], k != 0)
             lineIndex += len(lost_day_progress_lines)
             # 增加天数索引
             currentDayIndex += 1
