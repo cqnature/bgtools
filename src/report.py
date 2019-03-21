@@ -73,13 +73,11 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
 
         lineIndex = 0
         lines = file.readlines()
-        append_line(report_lines, lineIndex, lines[0].strip(), False)
-        lineIndex += 1
-        signup_day_progress_lines = [x.strip() for x in lines[1:4]]
+        signup_day_progress_lines = [x.strip() for x in lines[0:4]]
         signup_day_progress_results = querysql("./sql/plant_progress_of_signup_users.sql", platform, date)
         total_level_user_count = 0
-        signup_day_progress_lines[0] = signup_day_progress_lines[0].format(formatdate(date))
-        signup_day_progress_lines[2] = signup_day_progress_lines[2].format(firstopen_usercount, 100)
+        signup_day_progress_lines[1] = signup_day_progress_lines[1].format(formatdate(date))
+        signup_day_progress_lines[3] = signup_day_progress_lines[3].format(firstopen_usercount, 100)
         signup_base_datas = []
         progress_data_map = {}
         for k in range(1, max_level):
@@ -124,6 +122,7 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
                 lost_base_usercount = current_lost_usercount
                 lost_day_progress_lines[1] = lost_day_progress_lines[1].format(formatdate(single_date))
                 lost_day_progress_lines[3] = lost_day_progress_lines[3].format(firstopen_usercount, 100)
+                lost_day_progress_lines[4] = lost_day_progress_lines[4].format(firstopen_usercount - current_lost_usercount, 100*float(firstopen_usercount - current_lost_usercount)/float(firstopen_usercount))
                 lost_day_progress_lines[5] = lost_day_progress_lines[5].format(lost_base_usercount, 100* float(lost_base_usercount)/float(firstopen_usercount))
                 lost_base_datas[0][1] = current_lost_usercount - sum(t[1] for t in lost_base_datas)
                 lost_base_datas[0][2] = 100*float(lost_base_datas[0][1])/float(firstopen_usercount)
@@ -148,6 +147,7 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
                 lost_day_progress_lines[0] = lost_day_progress_lines[0].format(betweenday(date, single_date))
                 lost_day_progress_lines[1] = lost_day_progress_lines[1].format(formatdate(single_date))
                 lost_day_progress_lines[3] = lost_day_progress_lines[3].format(firstopen_usercount, 100)
+                lost_day_progress_lines[4] = lost_day_progress_lines[4].format(betweenday(date, single_date), firstopen_usercount - current_lost_usercount, 100*float(firstopen_usercount - current_lost_usercount)/float(firstopen_usercount))
                 lost_day_progress_lines[5] = lost_day_progress_lines[5].format(relative_lost_usercount, 100*float(relative_lost_usercount)/float(firstopen_usercount))
                 current_lost_datas[0][1] = lost_base_usercount - sum(t[1] for t in current_lost_datas)
                 current_lost_datas[0][2] = 100*float(current_lost_datas[0][1])/float(firstopen_usercount)
@@ -156,7 +156,6 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
                     base_data = lost_base_datas[k]
                     lost_day_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1] - base_data[1], data[2] - base_data[2]))
                 lost_base_datas = current_lost_datas
-            lost_day_progress_lines[4] = lost_day_progress_lines[4].format(firstopen_usercount - current_lost_usercount, 100*float(firstopen_usercount - current_lost_usercount)/float(firstopen_usercount))
             # 数据拼接
             for k in range(len(lost_day_progress_lines)):
                 append_line(report_lines, lineIndex + k, lost_day_progress_lines[k], k != 0)
@@ -177,12 +176,10 @@ def generate_stage_report_at_date(report_lines, platform, date, end_date):
 
         lineIndex = 0
         lines = file.readlines()
-        append_line(report_lines, lineIndex, lines[0].strip(), False)
-        lineIndex += 1
-        signup_day_progress_lines = [x.strip() for x in lines[1:4]]
+        signup_day_progress_lines = [x.strip() for x in lines[0:4]]
         signup_day_progress_results = querysql("./sql/stage_progress_of_signup_users.sql", platform, date)
-        signup_day_progress_lines[0] = signup_day_progress_lines[0].format(formatdate(date))
-        signup_day_progress_lines[2] = signup_day_progress_lines[2].format(firstopen_usercount, 100)
+        signup_day_progress_lines[1] = signup_day_progress_lines[1].format(formatdate(date))
+        signup_day_progress_lines[3] = signup_day_progress_lines[3].format(firstopen_usercount, 100)
         signup_base_datas = []
         stage_config_maps = {}
         for k in range(len(stage_configs)):
@@ -203,10 +200,11 @@ def generate_stage_report_at_date(report_lines, platform, date, end_date):
             wave_configs = stage_configs[data[0] - 1]['wave']
             if (data[1] == len(wave_configs)):
                 signup_day_progress_lines.append("{0},{1},{2},{3:.2f}%,{4:.2f}%,".format(data[0], data[1], data[2], data[3],  total_user_percent))
+                total_user_percent = 0
             else:
                 signup_day_progress_lines.append("{0},{1},{2},{3:.2f}%,,".format(data[0], data[1], data[2], data[3]))
         for k in range(len(signup_day_progress_lines)):
-            append_line(report_lines, lineIndex + k, signup_day_progress_lines[k])
+            append_line(report_lines, lineIndex + k, signup_day_progress_lines[k], k != 0)
         lineIndex += len(signup_day_progress_lines)
 
         currentDayIndex = 1
@@ -232,12 +230,21 @@ def generate_stage_report_at_date(report_lines, platform, date, end_date):
                     lost_base_data = stage_config_maps[int(row.stage)][int(row.wave)]
                     lost_base_data[2] = row.user_count
                     lost_base_data[3] = 100*float(row.user_count)/float(firstopen_usercount)
+                lost_base_usercount = current_lost_usercount
                 lost_day_progress_lines[1] = lost_day_progress_lines[1].format(formatdate(single_date))
                 lost_day_progress_lines[3] = lost_day_progress_lines[3].format(firstopen_usercount, 100)
+                lost_day_progress_lines[4] = lost_day_progress_lines[4].format(firstopen_usercount - current_lost_usercount, 100*float(firstopen_usercount - current_lost_usercount)/float(firstopen_usercount))
                 lost_day_progress_lines[5] = lost_day_progress_lines[5].format(lost_base_usercount, 100* float(lost_base_usercount)/float(firstopen_usercount))
+                total_user_percent = 0
                 for k in range(len(lost_base_datas)):
                     data = lost_base_datas[k]
-                    lost_day_progress_lines.append("{0},{1},{2},{3:.2f}%,".format(data[0], data[1], data[2], data[3]))
+                    total_user_percent += data[3]
+                    wave_configs = stage_configs[data[0] - 1]['wave']
+                    if (data[1] == len(wave_configs)):
+                        lost_day_progress_lines.append("{0},{1},{2},{3:.2f}%,{4:.2f}%,".format(data[0], data[1], data[2], data[3],  total_user_percent))
+                        total_user_percent = 0
+                    else:
+                        lost_day_progress_lines.append("{0},{1},{2},{3:.2f}%,,".format(data[0], data[1], data[2], data[3]))
             else:
                 current_lost_datas = []
                 lost_day_progress_lines.extend([x.strip() for x in lines[10:]])
@@ -259,13 +266,20 @@ def generate_stage_report_at_date(report_lines, platform, date, end_date):
                 lost_day_progress_lines[0] = lost_day_progress_lines[0].format(betweenday(date, single_date))
                 lost_day_progress_lines[1] = lost_day_progress_lines[1].format(formatdate(single_date))
                 lost_day_progress_lines[3] = lost_day_progress_lines[3].format(firstopen_usercount, 100)
+                lost_day_progress_lines[4] = lost_day_progress_lines[4].format(betweenday(date, single_date), firstopen_usercount - current_lost_usercount, 100*float(firstopen_usercount - current_lost_usercount)/float(firstopen_usercount))
                 lost_day_progress_lines[5] = lost_day_progress_lines[5].format(relative_lost_usercount, 100*float(relative_lost_usercount)/float(firstopen_usercount))
+                total_user_percent = 0
                 for k in range(len(current_lost_datas)):
                     data = current_lost_datas[k]
                     base_data = lost_base_datas[k]
-                    lost_day_progress_lines.append("{0},{1},{2},{3:.2f}%,".format(data[0], data[1], data[2] - base_data[2], data[3] - base_data[3]))
+                    total_user_percent += (data[3] - base_data[3])
+                    wave_configs = stage_configs[data[0] - 1]['wave']
+                    if (data[1] == len(wave_configs)):
+                        lost_day_progress_lines.append("{0},{1},{2},{3:.2f}%,{4:.2f}%,".format(data[0], data[1], data[2] - base_data[2], data[3] - base_data[3], total_user_percent))
+                        total_user_percent = 0
+                    else:
+                        lost_day_progress_lines.append("{0},{1},{2},{3:.2f}%,,".format(data[0], data[1], data[2] - base_data[2], data[3] - base_data[3]))
                 lost_base_datas = current_lost_datas
-            lost_day_progress_lines[4] = lost_day_progress_lines[4].format(firstopen_usercount - current_lost_usercount, 100*float(firstopen_usercount - current_lost_usercount)/float(firstopen_usercount))
             # 数据拼接
             for k in range(len(lost_day_progress_lines)):
                 append_line(report_lines, lineIndex + k, lost_day_progress_lines[k])
