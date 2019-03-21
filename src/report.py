@@ -48,23 +48,20 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
         lineIndex += 1
         signup_day_progress_lines = [x.strip() for x in lines[1:4]]
         signup_day_progress_results = querysql("./sql/plant_progress_of_signup_users.sql", platform, date)
-        currentIndex = signup_day_progress_results[0].max_level
         total_level_user_count = 0
         signup_day_progress_lines[0] = signup_day_progress_lines[0].format(date)
         signup_day_progress_lines[2] = signup_day_progress_lines[2].format(firstopen_usercount, 100)
         signup_base_datas = []
-        for k in range(1, currentIndex):
-            signup_base_datas.append([k, 0, 0])
+        progress_data_map = {}
+        for k in range(1, max_level):
+            data = [k, 0, 0]
+            signup_base_datas.append(data)
+            progress_data_map[k] = data
         for row in signup_day_progress_results:
-            for k in range(currentIndex + 1, row.max_level + 1):
-                if k == row.max_level:
-                    signup_base_datas.append([k, row.user_count, 100*float(row.user_count)/float(firstopen_usercount)])
-                    total_level_user_count += row.user_count
-                else:
-                    signup_base_datas.append([k, 0, 0])
-            currentIndex = row.max_level
-        for k in range(currentIndex + 1, max_level + 1):
-            signup_base_datas.append([k, 0, 0])
+            progress_data = progress_data_map[row.max_level]
+            progress_data[1] = row.user_count
+            progress_data[2] = 100*float(row.user_count)/float(firstopen_usercount)
+            total_level_user_count += row.user_count
         first_level_user_count = firstopen_usercount - total_level_user_count
         signup_base_datas[0][1] = first_level_user_count
         signup_base_datas[0][2] = 100*float(first_level_user_count)/float(firstopen_usercount)
@@ -88,50 +85,44 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
             lost_day_results = querysql("./sql/plant_progress_of_lost_users.sql", platform, date, single_date)
             if currentDayIndex == 1:
                 lost_day_progress_lines.extend([x.strip() for x in lines[4:8]])
-                currentIndex = 1
-                for k in range(1, lost_day_results[0].max_level):
-                    lost_base_datas.append((k, 0, 0))
+                progress_data_map = {}
+                for k in range(1, max_level):
+                    data = [k, 0, 0]
+                    lost_base_datas.append(data)
+                    progress_data_map[k] = data
                 for row in lost_day_results:
-                    for k in range(currentIndex + 1, row.max_level + 1):
-                        if k == row.max_level:
-                            lost_base_datas.append([k, row.user_count, 100*float(row.user_count)/float(firstopen_usercount)])
-                        else:
-                            lost_base_datas.append([k, 0, 0])
-                    currentIndex = row.max_level
-                for k in range(currentIndex + 1, max_level + 1):
-                    lost_base_datas.append([k, 0, 0])
+                    progress_data = progress_data_map[row.max_level]
+                    progress_data[1] = row.user_count
+                    progress_data[2] = 100*float(row.user_count)/float(firstopen_usercount)
                 lost_base_usercount = current_lost_usercount
                 lost_day_progress_lines[0] = lost_day_progress_lines[0].format(single_date)
                 lost_day_progress_lines[3] = lost_day_progress_lines[3].format(lost_base_usercount, 100* float(lost_base_usercount)/float(firstopen_usercount))
                 lost_base_day = single_date
-                lost_base_datas[1] = lost_base_usercount - sum(t[1] for t in lost_base_datas)
-                lost_base_datas[2] = 100*float(lost_base_datas[1])/float(firstopen_usercount)
+                lost_base_datas[0][1] = lost_base_usercount - sum(t[1] for t in lost_base_datas)
+                lost_base_datas[0][2] = 100*float(lost_base_datas[0][1])/float(firstopen_usercount)
                 for k in range(len(lost_base_datas)):
                     data = lost_base_datas[k]
                     lost_day_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1], data[2]))
             else:
                 current_lost_datas = []
                 lost_day_progress_lines.extend([x.strip() for x in lines[8:]])
-                currentIndex = 1
-                for k in range(1, lost_day_results[0].max_level):
-                    current_lost_datas.append((k, 0, 0))
+                progress_data_map = {}
+                for k in range(1, max_level):
+                    data = [k, 0, 0]
+                    current_lost_datas.append(data)
+                    progress_data_map[k] = data
                 for row in lost_day_results:
-                    for k in range(currentIndex + 1, row.max_level + 1):
-                        if k == row.max_level:
-                            current_lost_datas.append([k, row.user_count, 100*float(row.user_count)/float(firstopen_usercount)])
-                        else:
-                            current_lost_datas.append([k, 0, 0])
-                    currentIndex = row.max_level
-                for k in range(currentIndex + 1, max_level + 1):
-                    current_lost_datas.append([k, 0, 0])
+                    progress_data = progress_data_map[row.max_level]
+                    progress_data[1] = row.user_count
+                    progress_data[2] = 100*float(row.user_count)/float(firstopen_usercount)
                 origin_lost_base_usercount = lost_base_usercount
                 lost_base_usercount = current_lost_usercount
                 current_lost_usercount -= origin_lost_base_usercount
                 lost_day_progress_lines[0] = lost_day_progress_lines[0].format(single_date, lost_base_day)
                 lost_day_progress_lines[3] = lost_day_progress_lines[3].format(current_lost_usercount, 100*float(current_lost_usercount)/float(firstopen_usercount))
                 lost_base_day = single_date
-                current_lost_datas[1] = lost_base_usercount - sum(t[1] for t in current_lost_datas)
-                current_lost_datas[2] = 100*float(current_lost_datas[1])/float(firstopen_usercount)
+                current_lost_datas[0][1] = lost_base_usercount - sum(t[1] for t in current_lost_datas)
+                current_lost_datas[0][2] = 100*float(current_lost_datas[0][1])/float(firstopen_usercount)
                 for k in range(len(current_lost_datas)):
                     data = current_lost_datas[k]
                     base_data = lost_base_datas[k]
