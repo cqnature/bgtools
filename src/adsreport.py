@@ -59,6 +59,6 @@ def generate_ads_report(platform, start_date, end_date):
         report_lines = []
         for single_date in daterange(start_date, end_date, True):
             generate_ads_report_at_date(report_lines, platform, single_date)
-        reportstring = '\n'.join(report_lines)
+        reportstring = ''.join(report_lines)
         out.write(reportstring)
         out.close()
