@@ -36,12 +36,14 @@ def generate_stage_report_at_date(report_lines, platform, date, end_date):
             signup_base_datas.append(signup_base_data)
             stage_config_maps[k] = signup_base_data
         for row in signup_day_progress_results:
+            if row.max_stage > 40:
+                break
             signup_base_data = stage_config_maps[row.max_stage]
             signup_base_data[1] = row.user_count
             signup_base_data[2] = 100*float(row.user_count)/float(firstopen_usercount)
         for k in range(len(signup_base_datas)):
             data = signup_base_datas[k]
-            signup_day_progress_lines.append("{0},{1},{2:.2f}%,,".format(data[0], data[1], data[2]))
+            signup_day_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1], data[2]))
         for k in range(len(signup_day_progress_lines)):
             append_line(report_lines, lineIndex + k, signup_day_progress_lines[k], k != 0)
         lineIndex += len(signup_day_progress_lines)
@@ -63,6 +65,8 @@ def generate_stage_report_at_date(report_lines, platform, date, end_date):
                     lost_base_datas.append(lost_base_data)
                     stage_config_maps[k] = lost_base_data
                 for row in lost_day_results:
+                    if row.max_stage > 40:
+                        break
                     lost_base_data = stage_config_maps[row.max_stage]
                     lost_base_data[1] = row.user_count
                     lost_base_data[2] = 100*float(row.user_count)/float(firstopen_usercount)
@@ -73,7 +77,7 @@ def generate_stage_report_at_date(report_lines, platform, date, end_date):
                 lost_day_progress_lines[5] = lost_day_progress_lines[5].format(lost_base_usercount, 100* float(lost_base_usercount)/float(firstopen_usercount))
                 for k in range(len(lost_base_datas)):
                     data = lost_base_datas[k]
-                    lost_day_progress_lines.append("{0},{1},{2:.2f}%,,".format(data[0], data[1]], data[2]))
+                    lost_day_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1], data[2]))
             else:
                 current_lost_datas = []
                 lost_day_progress_lines.extend([x.strip() for x in lines[10:]])
@@ -83,6 +87,8 @@ def generate_stage_report_at_date(report_lines, platform, date, end_date):
                     current_lost_datas.append(current_lost_data)
                     stage_config_maps[k] = current_lost_data
                 for row in lost_day_results:
+                    if row.max_stage > 40:
+                        break
                     current_lost_data = stage_config_maps[row.max_stage]
                     current_lost_data[1] = row.user_count
                     current_lost_data[2] = 100*float(row.user_count)/float(firstopen_usercount)
@@ -96,7 +102,7 @@ def generate_stage_report_at_date(report_lines, platform, date, end_date):
                 lost_day_progress_lines[5] = lost_day_progress_lines[5].format(relative_lost_usercount, 100*float(relative_lost_usercount)/float(firstopen_usercount))
                 for k in range(len(current_lost_datas)):
                     data = current_lost_datas[k]
-                    lost_day_progress_lines.append("{0},{1},{2:.2f}%,,".format(data[0], data[1], data[2]))
+                    lost_day_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1], data[2]))
                 lost_base_datas = current_lost_datas
             # 数据拼接
             for k in range(len(lost_day_progress_lines)):

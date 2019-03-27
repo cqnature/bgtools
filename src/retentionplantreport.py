@@ -75,7 +75,10 @@ def generate_retentionplant_report_at_date(report_lines, platform, date, end_dat
                 progress_data[2] = 100*float(row.user_count)/float(firstopen_usercount)
             retention_day_progress_lines[1] = retention_day_progress_lines[1].format(formatdate(date))
             retention_day_progress_lines[3] = retention_day_progress_lines[3].format(firstopen_usercount, 100)
-            retention_day_progress_lines[4] = retention_day_progress_lines[4].format(betweenday(date, single_date), current_retention_usercount, 100*float(current_retention_usercount)/float(firstopen_usercount))
+            if currentDayIndex == 1:
+                retention_day_progress_lines[4] = retention_day_progress_lines[4].format(current_retention_usercount, 100*float(current_retention_usercount)/float(firstopen_usercount))
+            else:
+                retention_day_progress_lines[4] = retention_day_progress_lines[4].format(betweenday(date, single_date), current_retention_usercount, 100*float(current_retention_usercount)/float(firstopen_usercount))
             current_retention_datas[0][1] = current_retention_usercount - sum(t[1] for t in current_retention_datas)
             current_retention_datas[0][2] = 100*float(current_retention_datas[0][1])/float(firstopen_usercount)
             for k in range(len(current_retention_datas)):
