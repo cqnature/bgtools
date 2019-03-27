@@ -15,10 +15,10 @@ def get_plane_max_level():
         file.close()
     return max_level;
 
-def generate_plant_report_at_date(report_lines, platform, date, end_date):
-    print("generate_plant_report_at_date ", date)
+def generate_lostplant_report_at_date(report_lines, platform, date, end_date):
+    print("generate_lostplant_report_at_date ", date)
     max_level = get_plane_max_level()
-    with open("./etc/plant_progress_of_users.csv") as file:
+    with open("./etc/plant_progress_of_lost_users.csv") as file:
         firstopen_usercount = get_firstopen_usercount(platform, date)
         if firstopen_usercount == 0:
             return;
@@ -118,7 +118,7 @@ def generate_plant_report_at_date(report_lines, platform, date, end_date):
             del lost_day_progress_lines[:]
         file.close()
 
-def generate_plant_report(platform, start_date, end_date):
+def generate_lostplant_report(platform, start_date, end_date):
     if platform != "IOS" and platform != "ANDROID":
         print("You must pass platform in IOS or ANDROID")
         exit(1)
@@ -129,11 +129,11 @@ def generate_plant_report(platform, start_date, end_date):
         print(Argument)
         exit(1)
 
-    output = "output/plant_report_{0}_from_{1}_to_{2}.csv".format(platform, start_date, end_date)
+    output = "output/lostuser_plant_report_{0}_from_{1}_to_{2}.csv".format(platform, start_date, end_date)
     with open(output, mode='w+') as out:
         report_lines = []
         for single_date in daterange(start_date, end_date, True):
-            generate_plant_report_at_date(report_lines, platform, single_date, end_date)
+            generate_lostplant_report_at_date(report_lines, platform, single_date, end_date)
         reportstring = '\n'.join(report_lines)
         out.write(reportstring)
         out.close()

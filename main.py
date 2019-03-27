@@ -5,5 +5,5 @@ from src.query import querysql
 from src.report import generate_report
 
 if __name__ == '__main__':
-    generate_report("ANDROID", "20190318", "20190324")
+    generate_report("ANDROID", "20190317", "20190325")
     # generate_report("IOS", "20190315", "20190321")
