@@ -59,9 +59,9 @@ def generate_retentionplant_report_at_date(report_lines, platform, date, end_dat
             # 留存分布查询
             retention_day_results = querysql("./sql/plant_progress_of_retention_users.sql", platform, date, single_date)
             if currentDayIndex == 1:
-                retention_day_progress_lines.extend([x.strip() for x in lines[4:10]])
+                retention_day_progress_lines.extend([x.strip() for x in lines[4:9]])
             else:
-                retention_day_progress_lines.extend([x.strip() for x in lines[10:]])
+                retention_day_progress_lines.extend([x.strip() for x in lines[9:]])
                 retention_day_progress_lines[0] = retention_day_progress_lines[0].format(betweenday(date, single_date))
             current_retention_datas = []
             progress_data_map = {}
@@ -75,24 +75,21 @@ def generate_retentionplant_report_at_date(report_lines, platform, date, end_dat
                 progress_data[2] = 100*float(row.user_count)/float(firstopen_usercount)
             retention_day_progress_lines[1] = retention_day_progress_lines[1].format(formatdate(date))
             retention_day_progress_lines[3] = retention_day_progress_lines[3].format(firstopen_usercount, 100)
-            retention_day_progress_lines[4] = retention_day_progress_lines[4].format(betweenday(date, single_date), firstopen_usercount - current_lost_usercount, 100*float(firstopen_usercount - current_lost_usercount)/float(firstopen_usercount))
-            lost_day_progress_lines[5] = lost_day_progress_lines[5].format(relative_lost_usercount, 100*float(relative_lost_usercount)/float(firstopen_usercount))
-            current_lost_datas[0][1] = lost_base_usercount - sum(t[1] for t in current_lost_datas)
-            current_lost_datas[0][2] = 100*float(current_lost_datas[0][1])/float(firstopen_usercount)
-            for k in range(len(current_lost_datas)):
-                data = current_lost_datas[k]
-                base_data = lost_base_datas[k]
-                lost_day_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1] - base_data[1], data[2] - base_data[2]))
-            lost_base_datas = current_lost_datas
+            retention_day_progress_lines[4] = retention_day_progress_lines[4].format(betweenday(date, single_date), current_retention_usercount, 100*float(current_retention_usercount)/float(firstopen_usercount))
+            current_retention_datas[0][1] = current_retention_usercount - sum(t[1] for t in current_retention_datas)
+            current_retention_datas[0][2] = 100*float(current_retention_datas[0][1])/float(firstopen_usercount)
+            for k in range(len(current_retention_datas)):
+                data = current_retention_datas[k]
+                retention_day_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1], data[2]))
 
             # 数据拼接
-            for k in range(len(lost_day_progress_lines)):
-                append_line(report_lines, lineIndex + k, lost_day_progress_lines[k], k != 0)
-            lineIndex += len(lost_day_progress_lines)
+            for k in range(len(retention_day_progress_lines)):
+                append_line(report_lines, lineIndex + k, retention_day_progress_lines[k], k != 0)
+            lineIndex += len(retention_day_progress_lines)
             # 增加天数索引
             currentDayIndex += 1
             # 清空缓存
-            del lost_day_progress_lines[:]
+            del retention_day_progress_lines[:]
         file.close()
 
 def generate_retentionplant_report(platform, start_date, end_date):

@@ -33,9 +33,9 @@ def generate_lostplant_report_at_date(report_lines, platform, date, end_date):
         signup_base_datas = []
         progress_data_map = {}
         for k in range(1, max_level + 1):
-            data = [k, 0, 0]
-            signup_base_datas.append(data)
-            progress_data_map[k] = data
+            signup_base_data = [k, 0, 0]
+            signup_base_datas.append(signup_base_data)
+            progress_data_map[k] = signup_base_data
         for row in signup_day_progress_results:
             progress_data = progress_data_map[row.max_level]
             progress_data[1] = row.user_count
@@ -64,9 +64,9 @@ def generate_lostplant_report_at_date(report_lines, platform, date, end_date):
                 lost_day_progress_lines.extend([x.strip() for x in lines[4:10]])
                 progress_data_map = {}
                 for k in range(1, max_level + 1):
-                    data = [k, 0, 0]
-                    lost_base_datas.append(data)
-                    progress_data_map[k] = data
+                    lost_base_data = [k, 0, 0]
+                    lost_base_datas.append(lost_base_data)
+                    progress_data_map[k] = lost_base_data
                 for row in lost_day_results:
                     progress_data = progress_data_map[row.max_level]
                     progress_data[1] = row.user_count
@@ -86,9 +86,9 @@ def generate_lostplant_report_at_date(report_lines, platform, date, end_date):
                 lost_day_progress_lines.extend([x.strip() for x in lines[10:]])
                 progress_data_map = {}
                 for k in range(1, max_level + 1):
-                    data = [k, 0, 0]
-                    current_lost_datas.append(data)
-                    progress_data_map[k] = data
+                    current_lost_data = [k, 0, 0]
+                    current_lost_datas.append(current_lost_data)
+                    progress_data_map[k] = current_lost_data
                 for row in lost_day_results:
                     progress_data = progress_data_map[row.max_level]
                     progress_data[1] = row.user_count
