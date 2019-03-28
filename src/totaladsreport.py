@@ -15,7 +15,7 @@ def generate_total_ads_report_at_date(report_lines, platform, date, start_date, 
             for k in range(2):
                 append_line(report_lines, k, lines[k].strip())
             for single_date in daterange(date, end_date, True):
-                append_line(report_lines, 0, lines[2].strip().format(betweenday(date, single_date)))
+                append_line(report_lines, 0, lines[2].strip().format(betweenday(date, single_date) - 1))
                 append_line(report_lines, 1, lines[3].strip())
             file.close()
 
