@@ -7,16 +7,16 @@ from util import validate, daterange, formatdate, betweenday, append_line
 from common import get_firstopen_usercount, get_lost_usercount
 from query import querysql
 
-def generate_ads_report_at_date(report_lines, platform, date):
-    print("generate_ads_report_at_date ", date)
-    with open("./etc/ads_view_of_users.csv") as file:
+def generate_new_ads_report_at_date(report_lines, platform, date):
+    print("generate_new_ads_report_at_date ", date)
+    with open("./etc/ads_view_of_new_users.csv") as file:
         lines = file.readlines()
-        ads_view_count_results = querysql("./sql/ads_view_count.sql", platform, date)
+        ads_view_count_results = querysql("./sql/new_ads_view_count.sql", platform, date)
         if len(ads_view_count_results) == 0:
             return
-        ads_view_user_results = querysql("./sql/ads_view_users.sql", platform, date)
+        ads_view_user_results = querysql("./sql/new_ads_view_users.sql", platform, date)
         lines[0] = lines[0].format(formatdate(date))
-        lines[1] = lines[1].format(ads_view_count_results[0].daily_user_count)
+        lines[1] = lines[1].format(ads_view_count_results[0].new_user_count)
         for i in range(3, len(lines) - 1):
             line = lines[i]
             linesegments = line.split('|', 1)
@@ -43,7 +43,7 @@ def generate_ads_report_at_date(report_lines, platform, date):
         report_lines.extend(lines)
         file.close()
 
-def generate_ads_report(platform, start_date, end_date):
+def generate_new_ads_report(platform, start_date, end_date):
     if platform != "IOS" and platform != "ANDROID":
         print("You must pass platform in IOS or ANDROID")
         exit(1)
@@ -54,11 +54,11 @@ def generate_ads_report(platform, start_date, end_date):
         print(Argument)
         exit(1)
 
-    output = "output/ads_report_{0}_from_{1}_to_{2}.csv".format(platform, start_date, end_date)
+    output = "output/new_ads_report_{0}_from_{1}_to_{2}.csv".format(platform, start_date, end_date)
     with open(output, mode='w+') as out:
         report_lines = []
         for single_date in daterange(start_date, end_date, True):
-            generate_ads_report_at_date(report_lines, platform, single_date)
+            generate_new_ads_report_at_date(report_lines, platform, single_date)
         reportstring = ''.join(report_lines)
         out.write(reportstring)
         out.close()
