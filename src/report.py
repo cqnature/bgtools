@@ -11,11 +11,11 @@ from lostbehaviourreport import generate_lostbehaviour_report
 from retentionbehaviourreport import generate_retentionbehaviour_report
 
 def generate_report(platform, start_date, end_date):
-    # generate_lostplant_report(platform, start_date, end_date)
-    # generate_retentionplant_report(platform, start_date, end_date)
-    # generate_stage_report(platform, start_date, end_date)
-    # generate_retention_ads_report(platform, start_date, end_date)
-    # generate_new_ads_report(platform, start_date, end_date)
-    # generate_total_ads_report(platform, start_date, end_date)
-    # generate_lostbehaviour_report(platform, start_date, end_date)
+    generate_lostplant_report(platform, start_date, end_date)
+    generate_retentionplant_report(platform, start_date, end_date)
+    generate_stage_report(platform, start_date, end_date)
+    generate_retention_ads_report(platform, start_date, end_date)
+    generate_new_ads_report(platform, start_date, end_date)
+    generate_total_ads_report(platform, start_date, end_date)
+    generate_lostbehaviour_report(platform, start_date, end_date)
     generate_retentionbehaviour_report(platform, start_date, end_date)
