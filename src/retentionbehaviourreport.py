@@ -3,7 +3,7 @@
 
 import os
 import json
-from util import validate, daterange, formatdate, betweenday, append_line
+from util import validate, nextdatestring, daterange, formatdate, betweenday, append_line
 from common import get_firstopen_usercount, get_lost_usercount
 from query import querysql
 
@@ -22,8 +22,7 @@ def print_map(report_lines, level, map_name, map):
 
 def generate_retentionbehaviour_report_at_date(report_lines, platform, date):
     print("generate_retentionbehaviour_report_at_date ", date)
-    if date == end_date:
-        return
+    append_line(report_lines, len(report_lines), "date: {0}".format(date))
     for level in range(7, 9):
         behaviour_results = querysql("./sql/behaviour_of_retention_users.sql", platform, date, nextdatestring(date), level)
         compound_count_map = {}
