@@ -7,14 +7,39 @@ from util import validate, daterange, formatdate, betweenday, append_line
 from common import get_firstopen_usercount, get_lost_usercount
 from query import querysql
 
+def add_map_key_count(map, key):
+    if key == None:
+        key = 0
+    map[key] = map.get(key, 0) + 1
+
+def print_map(level, map_name, map):
+    print "level: ", level, " ", map_name
+    for key, value in map.items():
+        print key, ",", value
+
 def generate_lostbehaviour_report_at_date(report_lines, platform, date, end_date):
     print("generate_lostbehaviour_report_at_date ", date)
     if date == end_date:
         return
-    behaviour_results = querysql("./sql/behaviour_of_lost_users.sql", platform, date, end_date, 8)
+    level = 7
+    behaviour_results = querysql("./sql/behaviour_of_lost_users.sql", platform, date, end_date, level)
+    compound_count_map = {}
+    buy_count_map = {}
+    max_stage = {}
+    tap_count = {}
+    ad_view_count = {}
     for k in range(len(behaviour_results)):
         behaviour_result = behaviour_results[k]
-        print "max_level ", behaviour_result.max_level, " user_pseudo_id ", behaviour_result.user_pseudo_id, " compound_count ", behaviour_result.compound_count, " buy_count ", behaviour_result.buy_count, " max_stage ", behaviour_result.max_stage, " tap_count ", behaviour_result.tap_count, " ad_view_count ", behaviour_result.ad_view_count
+        add_map_key_count(compound_count_map, behaviour_result.compound_count)
+        add_map_key_count(buy_count_map, behaviour_result.buy_count)
+        add_map_key_count(max_stage, behaviour_result.max_stage)
+        add_map_key_count(tap_count, behaviour_result.tap_count)
+        add_map_key_count(ad_view_count, behaviour_result.ad_view_count)
+    print_map(level, "合成次数分布", compound_count_map)
+    print_map(level, "商店购买次数分布", buy_count_map)
+    print_map(level, "关卡分布", max_stage)
+    print_map(level, "点击次数分布", tap_count)
+    print_map(level, "观看广告次数分布", ad_view_count)
 
 def generate_lostbehaviour_report(platform, start_date, end_date):
     if platform != "IOS" and platform != "ANDROID":
