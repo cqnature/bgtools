@@ -20,12 +20,12 @@ def print_map(level, map_name, map):
         value = map.get(key)
         print key, ",", value
 
-def generate_lostbehaviour_report_at_date(report_lines, platform, date, end_date):
-    print("generate_lostbehaviour_report_at_date ", date)
+def generate_retentionbehaviour_report_at_date(report_lines, platform, date, end_date):
+    print("generate_retentionbehaviour_report_at_date ", date)
     if date == end_date:
         return
     for level in range(7, 9):
-        behaviour_results = querysql("./sql/behaviour_of_lost_users.sql", platform, date, end_date, level)
+        behaviour_results = querysql("./sql/behaviour_of_retention_users.sql", platform, date, end_date, level)
         compound_count_map = {}
         buy_count_map = {}
         max_stage = {}
@@ -44,7 +44,7 @@ def generate_lostbehaviour_report_at_date(report_lines, platform, date, end_date
         print_map(level, "点击次数分布", tap_count)
         print_map(level, "观看广告次数分布", ad_view_count)
 
-def generate_lostbehaviour_report(platform, start_date, end_date):
+def generate_retentionbehaviour_report(platform, start_date, end_date):
     if platform != "IOS" and platform != "ANDROID":
         print("You must pass platform in IOS or ANDROID")
         exit(1)
@@ -55,11 +55,11 @@ def generate_lostbehaviour_report(platform, start_date, end_date):
         print(Argument)
         exit(1)
 
-    output = "output/lostuser_behaviour_report_{0}_from_{1}_to_{2}.csv".format(platform, start_date, end_date)
+    output = "output/retentionuser_behaviour_report_{0}_from_{1}_to_{2}.csv".format(platform, start_date, end_date)
     with open(output, mode='w+') as out:
         report_lines = []
         for single_date in daterange(start_date, end_date, True):
-            generate_lostbehaviour_report_at_date(report_lines, platform, single_date, end_date)
+            generate_retentionbehaviour_report_at_date(report_lines, platform, single_date, end_date)
         reportstring = '\n'.join(report_lines)
         out.write(reportstring)
         out.close()
