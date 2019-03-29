@@ -59,7 +59,7 @@ LEFT JOIN (
   WHERE
     event_name = 'af_compound_food'
     AND event_params.key = 'level'
-    AND event_params.value.int_value = {3}
+    AND event_params.value.int_value <= {3}
     AND _TABLE_SUFFIX BETWEEN '{1}'
     AND '{2}'
   GROUP BY
@@ -125,7 +125,7 @@ LEFT JOIN (
     WHERE
       event_name = 'af_click_tap_button'
       AND event_params.key = 'level'
-      AND event_params.value.int_value = {3}
+      AND event_params.value.int_value <= {3}
       AND _TABLE_SUFFIX BETWEEN '{1}'
       AND '{2}' ) AS Y
   WHERE
