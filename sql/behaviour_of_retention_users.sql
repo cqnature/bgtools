@@ -48,7 +48,7 @@ FROM (
     GROUP BY
       user_pseudo_id)
   WHERE
-    max_level = {3} ) AS A
+    max_level >= {3} ) AS A
 LEFT JOIN (
   SELECT
     user_pseudo_id,

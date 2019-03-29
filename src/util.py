@@ -18,6 +18,10 @@ def daterange(start_date_string, end_date_string, containStart = False):
     for n in range(int((end_date - start_date).days)):
         yield (start_date + timedelta(n)).strftime("%Y%m%d")
 
+def nextdatestring(date_string):
+    next_date = datetime.strptime(date_string, "%Y%m%d").date() + timedelta(days=1)
+    return next_date.strftime("%Y%m%d")
+
 def formatdate(date_string):
     date = datetime.strptime(date_string, "%Y%m%d").date()
     return date.strftime("%m-%d")

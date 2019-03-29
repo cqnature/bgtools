@@ -8,6 +8,7 @@ from retentionadsreport import generate_retention_ads_report
 from newadsreport import generate_new_ads_report
 from totaladsreport import generate_total_ads_report
 from lostbehaviourreport import generate_lostbehaviour_report
+from retentionbehaviourreport import generate_retentionbehaviour_report
 
 def generate_report(platform, start_date, end_date):
     # generate_lostplant_report(platform, start_date, end_date)
@@ -17,3 +18,4 @@ def generate_report(platform, start_date, end_date):
     # generate_new_ads_report(platform, start_date, end_date)
     # generate_total_ads_report(platform, start_date, end_date)
     generate_lostbehaviour_report(platform, start_date, end_date)
+    generate_retentionbehaviour_report(platform, start_date, end_date)

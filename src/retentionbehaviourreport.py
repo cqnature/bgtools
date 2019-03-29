@@ -12,20 +12,20 @@ def add_map_key_count(map, key):
         key = 0
     map[key] = map.get(key, 0) + 1
 
-def print_map(level, map_name, map):
+def print_map(report_lines, level, map_name, map):
     mapKeys = map.keys()
     mapKeys.sort()
-    print "level: ", level, " ", map_name
+    append_line(report_lines, len(report_lines), "level: {0}, {1}".format(level, map_name))
     for key in mapKeys:
         value = map.get(key)
-        print key, ",", value
+        append_line(report_lines, len(report_lines), "{0},{1}".format(key, value))
 
-def generate_retentionbehaviour_report_at_date(report_lines, platform, date, end_date):
+def generate_retentionbehaviour_report_at_date(report_lines, platform, date):
     print("generate_retentionbehaviour_report_at_date ", date)
     if date == end_date:
         return
     for level in range(7, 9):
-        behaviour_results = querysql("./sql/behaviour_of_retention_users.sql", platform, date, end_date, level)
+        behaviour_results = querysql("./sql/behaviour_of_retention_users.sql", platform, date, nextdatestring(date), level)
         compound_count_map = {}
         buy_count_map = {}
         max_stage = {}
@@ -38,11 +38,11 @@ def generate_retentionbehaviour_report_at_date(report_lines, platform, date, end
             add_map_key_count(max_stage, behaviour_result.max_stage)
             add_map_key_count(tap_count, behaviour_result.tap_count)
             add_map_key_count(ad_view_count, behaviour_result.ad_view_count)
-        print_map(level, "合成次数分布", compound_count_map)
-        print_map(level, "商店购买次数分布", buy_count_map)
-        print_map(level, "关卡分布", max_stage)
-        print_map(level, "点击次数分布", tap_count)
-        print_map(level, "观看广告次数分布", ad_view_count)
+        print_map(report_lines, level, "合成次数分布", compound_count_map)
+        print_map(report_lines, level, "商店购买次数分布", buy_count_map)
+        print_map(report_lines, level, "关卡分布", max_stage)
+        print_map(report_lines, level, "点击次数分布", tap_count)
+        print_map(report_lines, level, "观看广告次数分布", ad_view_count)
 
 def generate_retentionbehaviour_report(platform, start_date, end_date):
     if platform != "IOS" and platform != "ANDROID":
@@ -59,7 +59,9 @@ def generate_retentionbehaviour_report(platform, start_date, end_date):
     with open(output, mode='w+') as out:
         report_lines = []
         for single_date in daterange(start_date, end_date, True):
-            generate_retentionbehaviour_report_at_date(report_lines, platform, single_date, end_date)
+            if single_date == end_date:
+                continue
+            generate_retentionbehaviour_report_at_date(report_lines, platform, single_date)
         reportstring = '\n'.join(report_lines)
         out.write(reportstring)
         out.close()
