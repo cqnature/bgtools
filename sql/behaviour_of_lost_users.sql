@@ -20,8 +20,8 @@ FROM (
     WHERE
       event_name = 'level_up'
       AND event_params.key = 'level'
-      AND _TABLE_SUFFIX BETWEEN '20190326'
-      AND '20190327'
+      AND _TABLE_SUFFIX BETWEEN '{1}'
+      AND '{2}'
       AND user_pseudo_id IN (
       SELECT
         DISTINCT user_pseudo_id
@@ -31,9 +31,9 @@ FROM (
       WHERE
         event_name = 'first_open'
         AND geo.country = 'United States'
-        AND platform = 'ANDROID'
-        AND _TABLE_SUFFIX BETWEEN '20190326'
-        AND '20190326' EXCEPT DISTINCT
+        AND platform = '{0}'
+        AND _TABLE_SUFFIX BETWEEN '{1}'
+        AND '{1}' EXCEPT DISTINCT
       SELECT
         DISTINCT user_pseudo_id
       FROM
@@ -42,13 +42,13 @@ FROM (
       WHERE
         event_name = 'user_engagement'
         AND geo.country = 'United States'
-        AND platform = 'ANDROID'
-        AND _TABLE_SUFFIX BETWEEN '20190327'
-        AND '20190327' )
+        AND platform = '{0}'
+        AND _TABLE_SUFFIX BETWEEN '{2}'
+        AND '{2}' )
     GROUP BY
       user_pseudo_id)
   WHERE
-    max_level = 8 ) AS A
+    max_level = {3} ) AS A
 LEFT JOIN (
   SELECT
     user_pseudo_id,
@@ -59,9 +59,9 @@ LEFT JOIN (
   WHERE
     event_name = 'af_compound_food'
     AND event_params.key = 'level'
-    AND event_params.value.int_value = 8
-    AND _TABLE_SUFFIX BETWEEN '20190326'
-    AND '20190327'
+    AND event_params.value.int_value = {3}
+    AND _TABLE_SUFFIX BETWEEN '{1}'
+    AND '{2}'
   GROUP BY
     user_pseudo_id ) AS B
 ON
@@ -76,8 +76,8 @@ LEFT JOIN (
   WHERE
     event_name = 'af_shop_buy_food'
     AND event_params.key = 'af_food_id'
-    AND _TABLE_SUFFIX BETWEEN '20190326'
-    AND '20190327'
+    AND _TABLE_SUFFIX BETWEEN '{1}'
+    AND '{2}'
   GROUP BY
     user_pseudo_id ) AS C
 ON
@@ -92,8 +92,8 @@ LEFT JOIN (
   WHERE
     event_name = 'af_stage_progress'
     AND event_params.key = 'af_stage'
-    AND _TABLE_SUFFIX BETWEEN '20190326'
-    AND '20190327'
+    AND _TABLE_SUFFIX BETWEEN '{1}'
+    AND '{2}'
   GROUP BY
     user_pseudo_id ) AS D
 ON
@@ -113,8 +113,8 @@ LEFT JOIN (
     WHERE
       event_name = 'af_click_tap_button'
       AND event_params.key = 'af_count'
-      AND _TABLE_SUFFIX BETWEEN '20190326'
-      AND '20190327' ) AS X,
+      AND _TABLE_SUFFIX BETWEEN '{1}'
+      AND '{2}' ) AS X,
     (
     SELECT
       user_pseudo_id,
@@ -125,9 +125,9 @@ LEFT JOIN (
     WHERE
       event_name = 'af_click_tap_button'
       AND event_params.key = 'level'
-      AND event_params.value.int_value = 8
-      AND _TABLE_SUFFIX BETWEEN '20190326'
-      AND '20190327' ) AS Y
+      AND event_params.value.int_value = {3}
+      AND _TABLE_SUFFIX BETWEEN '{1}'
+      AND '{2}' ) AS Y
   WHERE
     X.user_pseudo_id = Y.user_pseudo_id
     AND X.event_timestamp = Y.event_timestamp
@@ -146,8 +146,8 @@ LEFT JOIN (
     event_name = 'af_ad_view'
     AND event_params.key = 'af_event_id'
     AND event_params.value.int_value = 0
-    AND _TABLE_SUFFIX BETWEEN '20190326'
-    AND '20190327'
+    AND _TABLE_SUFFIX BETWEEN '{1}'
+    AND '{2}'
   GROUP BY
     user_pseudo_id ) AS F
 ON
