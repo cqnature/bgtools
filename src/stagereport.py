@@ -102,7 +102,8 @@ def generate_stage_report_at_date(report_lines, platform, date, end_date):
                 lost_day_progress_lines[5] = lost_day_progress_lines[5].format(relative_lost_usercount, 100*float(relative_lost_usercount)/float(firstopen_usercount))
                 for k in range(len(current_lost_datas)):
                     data = current_lost_datas[k]
-                    lost_day_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1], data[2]))
+                    base_data = lost_base_datas[k]
+                    lost_day_progress_lines.append("{0},{1},{2:.2f}%,".format(data[0], data[1] - base_data[1], data[2] - base_data[2]))
                 lost_base_datas = current_lost_datas
             # 数据拼接
             for k in range(len(lost_day_progress_lines)):
