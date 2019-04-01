@@ -29,7 +29,7 @@ def generate_total_ads_report_at_date(report_lines, platform, date, start_date, 
         else:
             user_count = get_retention_usercount(platform, date, single_date)
         view_count = sum(1 for _ in ads_view_count_results)
-        average_view_count = float(view_count)/float(user_count)
+        average_view_count = 0 if user_count == 0 else float(view_count)/float(user_count)
         append_line(report_lines, index, "{0},{1},{2:.2f},".format(user_count, view_count, average_view_count))
 
 def generate_total_ads_report(platform, start_date, end_date):
