@@ -44,11 +44,24 @@ FROM (
         AND geo.country = 'United States'
         AND platform = '{0}'
         AND _TABLE_SUFFIX BETWEEN '{2}'
-        AND '{2}' )
+        AND '{2}')
     GROUP BY
       user_pseudo_id)
   WHERE
-    max_level = {3} ) AS A
+    user_pseudo_id in (
+      SELECT
+        DISTINCT user_pseudo_id
+      FROM
+        `analytics_195246954.events_*` AS T,
+        T.event_params
+      WHERE
+        event_name = 'user_engagement'
+        AND geo.country = 'United States' /* 修改为指定国家 */
+        AND platform = '{0}'
+        AND _TABLE_SUFFIX BETWEEN '{3}'
+        AND '{3}'
+    )
+    AND max_level = {4} ) AS A
 LEFT JOIN (
   SELECT
     user_pseudo_id,

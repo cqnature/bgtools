@@ -38,7 +38,7 @@ def generate_lostbehaviour_report_at_date(report_lines, platform, date, level):
         # 次日留存用户数
         retention_usercount = get_retention_usercount(platform, date, date_add(date, add_day))
         lines[2] = lines[2].strip().format(retention_usercount, 100*float(retention_usercount)/float(firstopen_usercount))
-        behaviour_results = querysql("./sql/behaviour_of_lost_users.sql", platform, date, date_add(date, add_day), level)
+        behaviour_results = querysql("./sql/behaviour_of_lost_users.sql", platform, date, date_add(date, add_day), date_add(date, add_day - 1), level)
         lost_usercount = sum(1 for _ in behaviour_results)
         lines[3] = lines[3].strip().format(level, lost_usercount, 100*float(lost_usercount)/float(firstopen_usercount))
         lines[4] = lines[4].strip().format(level)
