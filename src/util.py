@@ -22,6 +22,10 @@ def nextdatestring(date_string):
     next_date = datetime.strptime(date_string, "%Y%m%d").date() + timedelta(days=1)
     return next_date.strftime("%Y%m%d")
 
+def date_add(date_string, days):
+    new_date = datetime.strptime(date_string, "%Y%m%d").date() + timedelta(days=days)
+    return new_date.strftime("%Y%m%d")
+
 def formatdate(date_string):
     date = datetime.strptime(date_string, "%Y%m%d").date()
     return date.strftime("%m-%d")
