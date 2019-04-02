@@ -17,5 +17,5 @@ def generate_report(platform, start_date, end_date):
     generate_retention_ads_report(platform, start_date, end_date)
     generate_new_ads_report(platform, start_date, end_date)
     generate_total_ads_report(platform, start_date, end_date)
-    generate_lostbehaviour_report(platform, start_date, end_date)
-    generate_retentionbehaviour_report(platform, start_date, end_date)
+    # generate_lostbehaviour_report(platform, start_date, end_date)
+    # generate_retentionbehaviour_report(platform, start_date, end_date)
