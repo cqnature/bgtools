@@ -19,5 +19,5 @@ if __name__ == '__main__':
     # signup_layers_progress_results = querysql("./sql/signup_layers_progress.sql", "ANDROID", "20190305")
     # for row in signup_layers_progress_results:
     #     print("{} : {} views".format(row.max_layer, row.user_count))
-    generate_report("ANDROID", "20190321", "20190323")
+    generate_report("ANDROID", "20190404", "20190407")
     # generate_report("IOS", "20190305", "20190312")
