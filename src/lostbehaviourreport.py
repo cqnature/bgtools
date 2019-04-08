@@ -7,6 +7,7 @@ from util import validate, date_add, daterange, formatdate, betweenday, append_l
 from common import get_firstopen_usercount, get_retention_usercount
 from query import querysql
 
+# 次留=1 三留=2 四留=3
 add_day = 2
 
 def add_map_key_count(map, key):
@@ -43,7 +44,7 @@ def generate_lostbehaviour_report_at_date(report_lines, platform, date, level):
         lines[3] = lines[3].strip().format(level, lost_usercount, 100*float(lost_usercount)/float(firstopen_usercount))
         lines[4] = lines[4].strip().format(level)
         dataset_map = []
-        key_count = 5
+        key_count = 14
         key_offset = 2
         for k in range(key_count):
             dataset_map.append({})
