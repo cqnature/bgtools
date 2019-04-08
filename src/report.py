@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
+import os
+import json
 
 from lostplantreport import generate_lostplant_report
 from retentionplantreport import generate_retentionplant_report
@@ -10,7 +12,21 @@ from totaladsreport import generate_total_ads_report
 from lostbehaviourreport import generate_lostbehaviour_report
 from retentionbehaviourreport import generate_retentionbehaviour_report
 
+def load_config():
+    with open("./config/config.json") as file:
+        file_config = json.load(file)
+        set_env_from_config(file_config, "GOOGLE_APPLICATION_CREDENTIALS")
+        set_env_from_config(file_config, "https_proxy")
+        set_env_from_config(file_config, "http_proxy")
+        set_env_from_config(file_config, "all_proxy")
+        file.close()
+
+def set_env_from_config(config, key):
+    if config.has_key(key):
+        os.environ[key] = config[key]
+
 def generate_report(platform, start_date, end_date):
+    load_config()
     generate_lostplant_report(platform, start_date, end_date)
     generate_retentionplant_report(platform, start_date, end_date)
     generate_stage_report(platform, start_date, end_date)
