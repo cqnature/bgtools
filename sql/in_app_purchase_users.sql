@@ -1,5 +1,7 @@
 SELECT
-  user_pseudo_id, event_params.value.string_value as product_name
+  user_pseudo_id,
+  event_params.value.string_value as item_name,
+  event_timestamp
 FROM
   `analytics_195246954.events_*` AS T,
   T.event_params
