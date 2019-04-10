@@ -44,7 +44,7 @@ def generate_lostbehaviour_report_at_date(report_lines, platform, date, level):
         lines[3] = lines[3].strip().format(level, lost_usercount, 100*float(lost_usercount)/float(firstopen_usercount))
         lines[4] = lines[4].strip().format(level)
         dataset_map = []
-        key_count = 14
+        key_count = 16
         key_offset = 2
         for k in range(key_count):
             dataset_map.append({})

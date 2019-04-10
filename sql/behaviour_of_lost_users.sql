@@ -14,7 +14,9 @@ SELECT
   L.guide11_trigger_count,
   M.guide11_complete_count,
   N.guide12_trigger_count,
-  O.guide12_complete_count
+  O.guide12_complete_count,
+  P.online_time,
+  Q.engagement_count
 FROM (
   SELECT
     user_pseudo_id,
@@ -358,3 +360,46 @@ LEFT JOIN (
     user_pseudo_id) AS O
 ON
   A.user_pseudo_id = O.user_pseudo_id
+LEFT JOIN (
+  SELECT
+    user_pseudo_id,
+    CAST(ROUND(SUM(online_time)/60) AS STRING) AS online_time
+  FROM (
+    SELECT
+      event_timestamp,
+      event_params.value.double_value AS online_time,
+      user_pseudo_id
+    FROM
+      `analytics_195246954.events_*` AS T,
+      T.event_params
+    WHERE
+      event_name = 'af_alive_time'
+      AND event_params.key = 'af_time'
+      AND _TABLE_SUFFIX BETWEEN '{1}'
+      AND '{2}')
+  GROUP BY
+    user_pseudo_id) AS P
+ON
+  A.user_pseudo_id = P.user_pseudo_id
+LEFT JOIN (
+  SELECT
+    user_pseudo_id,
+    COUNT(online_time) AS engagement_count
+  FROM (
+    SELECT
+      event_timestamp,
+      event_params.value.double_value AS online_time,
+      user_pseudo_id
+    FROM
+      `analytics_195246954.events_*` AS T,
+      T.event_params
+    WHERE
+      event_name = 'af_alive_time'
+      AND event_params.key = 'af_time'
+      AND event_params.value.double_value > 60
+      AND _TABLE_SUFFIX BETWEEN '{1}'
+      AND '{2}')
+  GROUP BY
+    user_pseudo_id) AS Q
+ON
+  A.user_pseudo_id = Q.user_pseudo_id
