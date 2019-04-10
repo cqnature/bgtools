@@ -363,7 +363,7 @@ ON
 LEFT JOIN (
   SELECT
     user_pseudo_id,
-    CAST(ROUND(SUM(online_time)/60) AS STRING) AS online_time
+    CAST(ROUND(SUM(online_time)/60) AS INT64) AS online_time
   FROM (
     SELECT
       event_timestamp,
