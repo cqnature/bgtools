@@ -7,6 +7,9 @@ from util import validate, nextdatestring, daterange, formatdate, betweenday, ap
 from common import get_firstopen_usercount, get_retention_usercount
 from query import querysql
 
+# 次留=1 三留=2 四留=3
+add_day = 1
+
 def add_map_key_count(map, key):
     if key == None:
         key = 0
@@ -34,14 +37,14 @@ def generate_retentionbehaviour_report_at_date(report_lines, platform, date, lev
         lines[0] = lines[0].strip().format(formatdate(date))
         lines[1] = lines[1].strip().format(firstopen_usercount)
         # 次日留存用户数
-        retention_usercount = get_retention_usercount(platform, date, nextdatestring(date))
+        retention_usercount = get_retention_usercount(platform, date, date_add(date, add_day))
         lines[2] = lines[2].strip().format(retention_usercount, 100*float(retention_usercount)/float(firstopen_usercount))
-        behaviour_results = querysql("./sql/behaviour_of_retention_users.sql", platform, date, nextdatestring(date), level)
+        behaviour_results = querysql("./sql/behaviour_of_retention_users.sql", platform, date, date_add(date, add_day), level)
         level_retention_usercount = sum(1 for _ in behaviour_results)
         lines[3] = lines[3].strip().format(level, level_retention_usercount, 100*float(level_retention_usercount)/float(firstopen_usercount))
         lines[4] = lines[4].strip().format(level)
         dataset_map = []
-        key_count = 5
+        key_count = 16
         key_offset = 2
         for k in range(key_count):
             dataset_map.append({})
