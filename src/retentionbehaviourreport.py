@@ -3,7 +3,7 @@
 
 import os
 import json
-from util import validate, nextdatestring, daterange, formatdate, betweenday, append_line
+from util import validate, date_add, daterange, formatdate, betweenday, append_line
 from common import get_firstopen_usercount, get_retention_usercount
 from query import querysql
 
