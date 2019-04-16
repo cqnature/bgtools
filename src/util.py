@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import os
+import pytz
 from datetime import timedelta, date, datetime
 
 def validate(date_text):
@@ -9,6 +10,11 @@ def validate(date_text):
         datetime.strptime(date_text, '%Y%m%d')
     except ValueError:
         raise ValueError("Incorrect data format, should be YYYYMMDD")
+
+def us_end_date():
+    tz = pytz.timezone('America/Los_Angeles')
+    end_date = datetime.now(tz) + timedelta(days=-1)
+    return end_date.strftime('%Y%m%d')
 
 def daterange(start_date_string, end_date_string, containStart = False):
     start_date = datetime.strptime(start_date_string, "%Y%m%d").date()

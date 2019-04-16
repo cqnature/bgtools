@@ -11,6 +11,7 @@ from newadsreport import generate_new_ads_report
 from totaladsreport import generate_total_ads_report
 from lostbehaviourreport import generate_lostbehaviour_report
 from retentionbehaviourreport import generate_retentionbehaviour_report
+from mailreport import generate_mail_report
 
 def load_config():
     with open("./config/config.json") as file:
@@ -27,6 +28,7 @@ def set_env_from_config(config, key):
 
 def generate_report(platform, start_date, end_date):
     load_config()
+    generate_mail_report(platform, start_date, end_date)
     generate_lostplant_report(platform, start_date, end_date)
     generate_retentionplant_report(platform, start_date, end_date)
     generate_stage_report(platform, start_date, end_date)
