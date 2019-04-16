@@ -50,7 +50,7 @@ def generate_mail_lately_report(platform, start_date, end_date):
             view_count = sum(1 for _ in ads_view_count_results)
             average_view_count = 0 if user_count == 0 else float(view_count)/float(user_count)
             cells.append("{0:.2f}".format(average_view_count))
-        for k in range(3):
+        for k in range(2):
             single_date = date_add(date, k + 1)
             user_count = get_retention_usercount(platform, date, single_date)
             cells.append("{0:.2f}%".format(100*float(user_count)/float(first_user_count)))

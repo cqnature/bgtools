@@ -11,6 +11,7 @@ from newadsreport import generate_new_ads_report
 from totaladsreport import generate_total_ads_report
 from lostbehaviourreport import generate_lostbehaviour_report
 from retentionbehaviourreport import generate_retentionbehaviour_report
+from iapbehaviourreport import generate_iap_behaviour_report
 from mailreport import generate_mail_report
 
 def load_config():
