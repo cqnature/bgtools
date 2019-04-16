@@ -2,8 +2,6 @@
 # coding=utf-8
 
 # import datetime
-import lib.HTML
-
 from src.query import querysql
 from src.mail import send_mail
 # def count_date(start_date_string, end_date_string):
@@ -22,24 +20,3 @@ if __name__ == '__main__':
     #     print("{} : {} views".format(row.max_layer, row.user_count))
     # generate_report("ANDROID", "20190409", "20190411")
     # generate_report("IOS", "20190305", "20190312")
-
-    #邮件正文内容
-    # mail_body = """
-    #  <p>你好，Python 邮件发送测试...</p>
-    #  <p>这是使用python登录qq邮箱发送HTML格式和图片的测试邮件：</p>
-    #  <p><a href='http://www.yiibai.com'>易百教程</a></p>
-    #  <p>图片演示：</p>
-    #  <p>![](cid:send_image)</p>
-    # """
-    # table_data = [
-    #         ['Smith',       'John',         30,    4.5],
-    #         ['Carpenter',   'Jack',         47,    7],
-    #         ['Johnson',     'Paul',         62,    10.55],
-    #     ]
-    # htmlcode = HTML.table(table_data,
-    #     header_row = ['Last name',   'First name',   'Age', 'Score'],
-    #     col_width=['', '20%', '10%', '10%'],
-    #     col_align=['left', 'center', 'right', 'char'],
-    #     col_styles=['font-size: large', '', 'font-size: small', 'background-color:yellow'])
-    #
-    # send_mail("测试标题", htmlcode)

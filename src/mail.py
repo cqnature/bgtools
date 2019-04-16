@@ -16,7 +16,7 @@ fromaddr = 'cqnature@gmail.com'
 username = 'cqnature@gmail.com'
 password = 'fsajhtsznoqplupj'
 #收件人邮箱
-toaddrs = ['bear@peakxgames.com','bear@weedo.hk']
+toaddrs = ['nero@peakxgames.com','bear@peakxgames.com']
 
 def send_mail(subject, htmlBody):
     #邮件的正文内容
