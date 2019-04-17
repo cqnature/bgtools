@@ -29,6 +29,7 @@ def sortbydate(e):
   return e['start']
 
 def generate_mail_lately_report(platform, start_date, end_date):
+    print 'generate_mail_lately_report from: ', start_date, " to: ", end_date
     htmlcode = HTML.Table()
     header_row = ['日期', '新注册用户', '首日广告观看次数', '次日广告观看次数', '三日广告观看次数', '次留', '三留']
     cells = []
